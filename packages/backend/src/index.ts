@@ -14,11 +14,13 @@ backend.add(import('@backstage/plugin-app-backend'));
 backend.add(import('@backstage/plugin-proxy-backend'));
 
 // scaffolder plugin
-backend.add(import('@backstage/plugin-scaffolder-backend'));
-backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
-backend.add(
-  import('@backstage/plugin-scaffolder-backend-module-notifications'),
-);
+// TEMPORARILY DISABLED: isolated-vm dependency fails to build on this system
+// TODO: Re-enable after fixing isolated-vm build or upgrading to a version that doesn't require it
+// backend.add(import('@backstage/plugin-scaffolder-backend'));
+// backend.add(import('@backstage/plugin-scaffolder-backend-module-github'));
+// backend.add(
+//   import('@backstage/plugin-scaffolder-backend-module-notifications'),
+// );
 
 // techdocs plugin
 backend.add(import('@backstage/plugin-techdocs-backend'));
@@ -31,9 +33,10 @@ backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 
 // catalog plugin
 backend.add(import('@backstage/plugin-catalog-backend'));
-backend.add(
-  import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
-);
+// TEMPORARILY DISABLED: depends on scaffolder which is disabled
+// backend.add(
+//   import('@backstage/plugin-catalog-backend-module-scaffolder-entity-model'),
+// );
 
 // See https://backstage.io/docs/features/software-catalog/configuration#subscribing-to-catalog-errors
 backend.add(import('@backstage/plugin-catalog-backend-module-logs'));
