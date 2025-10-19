@@ -1,28 +1,70 @@
 {
-    "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
-    "packages": [
-      "nodejs_20",
-      "yarn",
-      "git",
-      "python3",
-      "gcc",
-      "gh"
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
+  "packages": [
+    "nodejs_20",
+    "yarn",
+    "git",
+    "python3",
+    "gcc",
+    "gh",
+    "kubectl",
+    "kustomize",
+    "docker@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "echo 'Welcome to Cadenza devbox!' > /dev/null"
     ],
-    "shell": {
-      "init_hook": [
-        "echo 'Welcome to Cadenza devbox!' > /dev/null"
+    "scripts": {
+      "test": [
+        "echo \"Error: no test specified\" && exit 1"
       ],
-      "scripts": {
-        "test": [
-          "echo \"Error: no test specified\" && exit 1"
-        ],
-        "start": [
-          "yarn start"
-        ],
-        "install": [
-          "yarn install"
-        ]
-      }
+      "start": [
+        "yarn start"
+      ],
+      "install": [
+        "yarn install"
+      ],
+      "docker:build": [
+        "docker build -t registry.192.168.1.239.nip.io:443/cadenza:latest -f Dockerfile.multistage ."
+      ],
+      "docker:push": [
+        "docker push registry.192.168.1.239.nip.io:443/cadenza:latest"
+      ],
+      "docker:build-push": [
+        "devbox run docker:build",
+        "devbox run docker:push"
+      ],
+      "k8s:dev:build": [
+        "kustomize build k8s/overlays/development"
+      ],
+      "k8s:dev:apply": [
+        "kubectl apply -k k8s/overlays/development"
+      ],
+      "k8s:dev:delete": [
+        "kubectl delete -k k8s/overlays/development"
+      ],
+      "k8s:prod:build": [
+        "kustomize build k8s/overlays/production"
+      ],
+      "k8s:prod:apply": [
+        "kubectl apply -k k8s/overlays/production"
+      ],
+      "k8s:prod:delete": [
+        "kubectl delete -k k8s/overlays/production"
+      ],
+      "k8s:deploy:dev": [
+        "devbox run docker:build",
+        "docker tag registry.192.168.1.239.nip.io:443/cadenza:latest registry.192.168.1.239.nip.io:443/cadenza:dev",
+        "docker push registry.192.168.1.239.nip.io:443/cadenza:dev",
+        "devbox run k8s:dev:apply"
+      ],
+      "k8s:deploy:prod": [
+        "devbox run docker:build",
+        "docker tag registry.192.168.1.239.nip.io:443/cadenza:latest registry.192.168.1.239.nip.io:443/cadenza:prod",
+        "docker push registry.192.168.1.239.nip.io:443/cadenza:prod",
+        "devbox run k8s:prod:apply"
+      ]
     }
   }
-  
+}

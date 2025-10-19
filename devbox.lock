@@ -1,6 +1,54 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "docker@latest": {
+      "last_modified": "2025-10-10T13:35:32Z",
+      "resolved": "github:NixOS/nixpkgs/870493f9a8cb0b074ae5b411b2f232015db19a65#docker",
+      "source": "devbox-search",
+      "version": "28.4.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/bnvsfm00pfigq7mfra4ychhpzkixm37g-docker-28.4.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/bnvsfm00pfigq7mfra4ychhpzkixm37g-docker-28.4.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/6a6jlpi39n13614qkxsrcw7fj8wg2rpf-docker-28.4.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/6a6jlpi39n13614qkxsrcw7fj8wg2rpf-docker-28.4.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/g1da19zv5n6riyj3dlqp9agjrwh4xnr6-docker-28.4.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/g1da19zv5n6riyj3dlqp9agjrwh4xnr6-docker-28.4.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/x0zyq8g4b0d3plfnrf1qh532mnv6z5ql-docker-28.4.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/x0zyq8g4b0d3plfnrf1qh532mnv6z5ql-docker-28.4.0"
+        }
+      }
+    },
     "gcc": {
       "resolved": "github:NixOS/nixpkgs/e57b3b16ad8758fd681511a078f35c416a8cc939?narHash=sha256-puBMviZhYlqOdUUgEmMVJpXqC%2FToEqSvkyZ30qQ09xM%3D#gcc",
       "source": "nixpkg"
@@ -16,6 +64,14 @@
     "github:NixOS/nixpkgs/nixpkgs-unstable": {
       "last_modified": "2025-09-25T01:21:52Z",
       "resolved": "github:NixOS/nixpkgs/e57b3b16ad8758fd681511a078f35c416a8cc939?lastModified=1758763312&narHash=sha256-puBMviZhYlqOdUUgEmMVJpXqC%2FToEqSvkyZ30qQ09xM%3D"
+    },
+    "kubectl": {
+      "resolved": "github:NixOS/nixpkgs/e57b3b16ad8758fd681511a078f35c416a8cc939?narHash=sha256-puBMviZhYlqOdUUgEmMVJpXqC%2FToEqSvkyZ30qQ09xM%3D#kubectl",
+      "source": "nixpkg"
+    },
+    "kustomize": {
+      "resolved": "github:NixOS/nixpkgs/e57b3b16ad8758fd681511a078f35c416a8cc939?narHash=sha256-puBMviZhYlqOdUUgEmMVJpXqC%2FToEqSvkyZ30qQ09xM%3D#kustomize",
+      "source": "nixpkg"
     },
     "nodejs_20": {
       "plugin_version": "0.0.2",

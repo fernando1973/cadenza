@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cadenza
+  labels:
+    app: cadenza
+    component: backstage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cadenza
+      component: backstage
+  template:
+    metadata:
+      labels:
+        app: cadenza
+        component: backstage
+    spec:
+      containers:
+      - name: backstage
+        image: registry.192.168.1.239.nip.io:443/cadenza:latest
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 7007
+          protocol: TCP
+        env:
+        - name: NODE_ENV
+          value: production
+        - name: APP_CONFIG_app_baseUrl
+          value: http://localhost:7007
+        - name: APP_CONFIG_backend_baseUrl
+          value: http://localhost:7007
+        - name: APP_CONFIG_backend_listen_port
+          value: "7007"
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 7007
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 7007
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"

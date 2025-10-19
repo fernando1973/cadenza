@@ -1,0 +1,82 @@
+# Multi-stage Dockerfile for Backstage
+# This dockerfile builds both the frontend and backend in a single build
+
+# Stage 1 - Build the frontend and backend
+FROM node:22-bookworm-slim AS build
+
+# Set Python interpreter for `node-gyp` to use
+ENV PYTHON=/usr/bin/python3
+
+# Install build dependencies
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && \
+    apt-get install -y --no-install-recommends python3 g++ build-essential git && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json yarn.lock .yarnrc.yml backstage.json ./
+COPY .yarn ./.yarn
+
+# Copy all workspace packages
+COPY packages ./packages
+COPY plugins ./plugins/
+COPY examples ./examples
+
+# Install dependencies
+RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked \
+    yarn install --immutable
+
+# Build all packages
+COPY app-config.yaml app-config.production.yaml tsconfig.json ./
+RUN yarn tsc
+RUN yarn build:backend --config app-config.yaml
+
+# Stage 2 - Build the production image
+FROM node:22-bookworm-slim
+
+# Set Python interpreter for `node-gyp` to use
+ENV PYTHON=/usr/bin/python3
+
+# Install runtime dependencies
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && \
+    apt-get install -y --no-install-recommends python3 libsqlite3-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Switch to node user
+USER node
+WORKDIR /app
+
+# Copy yarn configuration
+COPY --chown=node:node .yarn ./.yarn
+COPY --chown=node:node .yarnrc.yml backstage.json ./
+
+# Set production mode
+ENV NODE_ENV=production
+ENV NODE_OPTIONS="--no-node-snapshot"
+
+# Copy built artifacts from build stage
+COPY --from=build --chown=node:node /app/yarn.lock /app/package.json ./
+COPY --from=build --chown=node:node /app/packages/backend/dist/skeleton.tar.gz ./
+RUN tar xzf skeleton.tar.gz && rm skeleton.tar.gz
+
+# Install production dependencies only
+RUN --mount=type=cache,target=/home/node/.cache/yarn,sharing=locked,uid=1000,gid=1000 \
+    yarn workspaces focus --all --production && rm -rf "$(yarn cache clean)"
+
+# Copy examples if needed
+COPY --from=build --chown=node:node /app/examples ./examples
+
+# Copy the backend bundle and config
+COPY --from=build --chown=node:node /app/packages/backend/dist/bundle.tar.gz ./
+COPY --chown=node:node app-config*.yaml ./
+RUN tar xzf bundle.tar.gz && rm bundle.tar.gz
+
+# Expose port
+EXPOSE 7007
+
+CMD ["node", "packages/backend", "--config", "app-config.yaml", "--config", "app-config.production.yaml"]

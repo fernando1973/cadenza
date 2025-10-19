@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cadenza
+  labels:
+    app: cadenza
+    component: backstage
+spec:
+  type: ClusterIP
+  ports:
+  - port: 7007
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: cadenza
+    component: backstage

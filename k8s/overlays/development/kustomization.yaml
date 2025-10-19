@@ -1,0 +1,45 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: cadenza-dev
+
+namePrefix: dev-
+
+commonLabels:
+  environment: development
+
+resources:
+  - ../../base
+
+replicas:
+  - name: cadenza
+    count: 1
+
+images:
+  - name: registry.192.168.1.239.nip.io:443/cadenza
+    newTag: dev
+
+patches:
+  - patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/0/value
+        value: development
+    target:
+      kind: Deployment
+      name: cadenza
+  - patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: cadenza.192.168.1.239.nip.io
+      - op: replace
+        path: /metadata/annotations/nginx.ingress.kubernetes.io~1ssl-redirect
+        value: "true"
+      - op: add
+        path: /spec/tls
+        value:
+          - hosts:
+              - cadenza.192.168.1.239.nip.io
+            secretName: cadenza-tls
+    target:
+      kind: Ingress
+      name: cadenza

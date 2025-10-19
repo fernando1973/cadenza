@@ -100,6 +100,19 @@ Test commands depend on the technology stack of the specific project. Common pat
 
 This project uses [Devbox](https://www.jetify.com/devbox) for environment management. The `devbox.json` file defines packages and shell scripts.
 
+### Kubernetes Cluster
+
+A Kubernetes cluster is available in the default context for deployment and testing.
+
+**Container Registry:**
+- Registry URL: `registry.192.168.1.239.nip.io:443`
+- Images should be tagged and pushed to this registry for deployment
+
+**Deployment:**
+- Kubernetes manifests are located in the `k8s/` directory
+- Uses Kustomize for declarative configuration management
+- Standard layout with base configurations and environment-specific overlays
+
 ## Key Principles
 
 - PRDs target junior developer understanding with explicit requirements

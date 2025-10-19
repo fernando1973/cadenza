@@ -1,0 +1,48 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: cadenza-prod
+
+namePrefix: prod-
+
+commonLabels:
+  environment: production
+
+resources:
+  - ../../base
+
+replicas:
+  - name: cadenza
+    count: 2
+
+images:
+  - name: registry.192.168.1.239.nip.io:443/cadenza
+    newTag: prod
+
+patches:
+  - patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: 1Gi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: 500m
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: 2Gi
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: 2000m
+    target:
+      kind: Deployment
+      name: cadenza
+  - patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: cadenza.local
+      - op: add
+        path: /metadata/annotations/nginx.ingress.kubernetes.io~1ssl-redirect
+        value: "true"
+    target:
+      kind: Ingress
+      name: cadenza

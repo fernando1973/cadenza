@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+commonLabels:
+  app.kubernetes.io/name: cadenza
+  app.kubernetes.io/part-of: backstage
+
+images:
+  - name: registry.192.168.1.239.nip.io:443/cadenza
+    newTag: latest
