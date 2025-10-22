@@ -26,7 +26,7 @@
         "yarn install"
       ],
       "docker:build": [
-        "docker build -t registry.192.168.1.239.nip.io:443/cadenza:latest -f Dockerfile.multistage ."
+        "docker build -t registry.192.168.1.239.nip.io:443/cadenza:latest -f packages/backend/Dockerfile ."
       ],
       "docker:push": [
         "docker push registry.192.168.1.239.nip.io:443/cadenza:latest"

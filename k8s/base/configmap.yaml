@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cadenza-config
+  labels:
+    app: cadenza
+    component: backstage
+data:
+  app-config.production.yaml: |
+    app:
+      # Should be the same as backend.baseUrl when using the `app-backend` plugin.
+      baseUrl: http://localhost:7007
+
+    backend:
+      # Note that the baseUrl should be the URL that the browser and other clients
+      # should use when communicating with the backend, i.e. it needs to be
+      # reachable not just from within the backend host, but from all of your
+      # callers. When its value is "http://localhost:7007", it's strictly private
+      # and can't be reached by others.
+      baseUrl: http://localhost:7007
+      # The listener should be configured as an object for production deployments
+      listen:
+        port: 7007
+        host: 0.0.0.0
+      # CORS configuration for production
+      cors:
+        origin: https://cadenza.192.168.1.239.nip.io
+        methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+        credentials: true
+      # CSP configuration
+      csp:
+        connect-src: ["'self'", 'http:', 'https:']
+
+      # For now using SQLite for development. Switch to PostgreSQL for production later.
+      # config options: https://node-postgres.com/apis/client
+      database:
+        client: better-sqlite3
+        connection:
+          directory: /app/data
+
+    auth:
+      providers:
+        guest: {}
+
+    catalog:
+      # Overrides the default list locations from app-config.yaml as these contain example data.
+      # See https://backstage.io/docs/features/software-catalog/#adding-components-to-the-catalog for more details
+      # on how to get entities into the catalog.
+      import:
+        entityFilename: catalog-info.yaml
+        pullRequestBranchName: backstage-integration
+      rules:
+        - allow: [Component, System, API, Resource, Location]
+      locations:
+        # Local example data, replace this with your production config, these are intended for demo use only.
+        # File locations are relative to the backend process, typically in a deployed context, such as in a Docker container, this will be the root
+        - type: file
+          target: ./examples/entities.yaml
+
+        # Local example template
+        - type: file
+          target: ./examples/template/template.yaml
+          rules:
+            - allow: [Template]
+
+        # Local example organizational data
+        - type: file
+          target: ./examples/org.yaml
+          rules:
+            - allow: [User, Group]

@@ -5,8 +5,9 @@ namespace: cadenza-prod
 
 namePrefix: prod-
 
-commonLabels:
-  environment: production
+labels:
+  - pairs:
+      environment: production
 
 resources:
   - ../../base

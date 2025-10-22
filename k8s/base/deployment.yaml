@@ -34,6 +34,8 @@ spec:
           value: http://localhost:7007
         - name: APP_CONFIG_backend_listen_port
           value: "7007"
+        - name: APP_CONFIG_backend_cors_origin
+          value: http://localhost:7007
         livenessProbe:
           httpGet:
             path: /healthcheck
@@ -57,3 +59,11 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "1000m"
+        volumeMounts:
+        - name: config
+          mountPath: /app/app-config.production.yaml
+          subPath: app-config.production.yaml
+      volumes:
+      - name: config
+        configMap:
+          name: cadenza-config

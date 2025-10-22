@@ -5,8 +5,9 @@ namespace: cadenza-dev
 
 namePrefix: dev-
 
-commonLabels:
-  environment: development
+labels:
+  - pairs:
+      environment: development
 
 resources:
   - ../../base
@@ -23,7 +24,16 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/env/0/value
-        value: development
+        value: production
+      - op: replace
+        path: /spec/template/spec/containers/0/env/1/value
+        value: https://cadenza.192.168.1.239.nip.io
+      - op: replace
+        path: /spec/template/spec/containers/0/env/2/value
+        value: https://cadenza.192.168.1.239.nip.io
+      - op: replace
+        path: /spec/template/spec/containers/0/env/4/value
+        value: https://cadenza.192.168.1.239.nip.io
     target:
       kind: Deployment
       name: cadenza
@@ -32,7 +42,7 @@ patches:
         path: /spec/rules/0/host
         value: cadenza.192.168.1.239.nip.io
       - op: replace
-        path: /metadata/annotations/nginx.ingress.kubernetes.io~1ssl-redirect
+        path: /metadata/annotations/traefik.ingress.kubernetes.io~1router.tls
         value: "true"
       - op: add
         path: /spec/tls

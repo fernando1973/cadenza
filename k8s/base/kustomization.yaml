@@ -5,10 +5,12 @@ resources:
   - deployment.yaml
   - service.yaml
   - ingress.yaml
+  - configmap.yaml
 
-commonLabels:
-  app.kubernetes.io/name: cadenza
-  app.kubernetes.io/part-of: backstage
+labels:
+  - pairs:
+      app.kubernetes.io/name: cadenza
+      app.kubernetes.io/part-of: backstage
 
 images:
   - name: registry.192.168.1.239.nip.io:443/cadenza
